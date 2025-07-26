@@ -1,0 +1,28 @@
+# 🔐 Секреты
+.env
+*.json
+*.pem
+
+# 🐍 Python
+__pycache__/
+*.py[cod]
+*.log
+*.sqlite3
+*.db
+
+# 🐳 Docker
+Dockerfile
+.dockerignore
+
+# ⚙️ Venv
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# 💻 IDE/OS
+.idea/
+.vscode/
+.DS_Store

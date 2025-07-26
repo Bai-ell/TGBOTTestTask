@@ -1,0 +1,29 @@
+from aiogram.fsm.state import StatesGroup, State
+
+class Form(StatesGroup):
+    text = State()
+
+
+
+
+
+
+
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+scope = [
+    "https://spreadsheets.google.com/feeds",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+client = gspread.authorize(creds)
+
+SPREADSHEET_ID = "1h3nTqhcE9NbV14gn7JZCnnG6h7DbXuTS5XAs1ipkWJE"
+sheet = client.open_by_key(SPREADSHEET_ID).sheet1  # первый лист
+
+def add_row(text):
+    sheet.append_row([text])
