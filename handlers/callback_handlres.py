@@ -3,7 +3,7 @@ from aiogram import Router, types, F
 from aiogram.types import Message
 from keyboards.reply import main_keyboard
 from keyboards.builders import get_carousel_keyboard, services
-from utils.states import Form
+from utils.states import Form, add_row
 from aiogram.fsm.context import FSMContext
 
 
@@ -75,10 +75,41 @@ async def show_services(message: types.Message):
 
 @router.message(F.text == "📝 Оставить заявку")
 async def start_application(message: types.Message, state: FSMContext):
-    await message.answer(
-        "Пожалуйста, введите заявку в формате:\nИмя, Телефон, Комментарий"
-    )
-    await state.set_state(Form.text)
+    await message.answer("Как вас зовут?")
+    await state.set_state(Form.name)
+
+
+@router.message(Form.name)
+async def process_name(message: types.Message, state: FSMContext):
+    await state.update_data(name=message.text)
+    await message.answer("Укажите ваш номер телефона:")
+    await state.set_state(Form.phone)
+
+
+@router.message(Form.phone)
+async def process_phone(message: types.Message, state: FSMContext):
+    await state.update_data(phone=message.text)
+    await message.answer("Оставьте комментарий или уточнение:")
+    await state.set_state(Form.comment)
+
+
+@router.message(Form.comment)
+async def process_comment(message: types.Message, state: FSMContext):
+    await state.update_data(comment=message.text)
+    data = await state.get_data()
+
+    name = data["name"]
+    phone = data["phone"]
+    comment = data["comment"]
+
+    success = add_row(name, phone, comment)
+
+    if success:
+        await message.answer("✅ Заявка успешно отправлена!\nМы скоро свяжемся с вами.")
+    else:
+        await message.answer("⚠️ Произошла ошибка при отправке заявки. Попробуйте позже.")
+
+    await state.clear()
 
 
 

@@ -1,10 +1,9 @@
 from aiogram.fsm.state import StatesGroup, State
 
 class Form(StatesGroup):
-    text = State()
-
-
-
+    name = State()
+    phone = State()
+    comment = State()
 
 
 
@@ -25,5 +24,11 @@ client = gspread.authorize(creds)
 SPREADSHEET_ID = "1h3nTqhcE9NbV14gn7JZCnnG6h7DbXuTS5XAs1ipkWJE"
 sheet = client.open_by_key(SPREADSHEET_ID).sheet1  # первый лист
 
-def add_row(text):
-    sheet.append_row([text])
+# ✅ Обновлённая функция записи
+def add_row(name: str, phone: str, comment: str):
+    try:
+        sheet.append_row([name, phone, comment])
+        return True
+    except Exception as e:
+        print(f"[Ошибка Google Sheets]: {e}")
+        return False
